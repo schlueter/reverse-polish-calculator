@@ -1,7 +1,7 @@
 /* global require, module */
 'use strict';
 
-var findBowerTrees = require('broccoli-bower'),
+var angularTemplates = require('broccoli-angular-templates-cache'),
     compileSass = require('broccoli-sass'),
     concatenate = require('broccoli-concat'),
     mergeTrees = require('broccoli-merge-trees'),
@@ -9,10 +9,15 @@ var findBowerTrees = require('broccoli-bower'),
     uglifyJs = require('broccoli-uglify-js'),
     app = 'app',
     destDir = '/',
+    sourceTrees = [
+        app,
+        'bower_components/angular',
+        'bower_components/bootstrap-sass/assets/javascripts',
+        'bower_components/jquery/dist'
+    ],
     appCss,
     appHtml,
-    appJs,
-    sourceTrees;
+    appJs;
 
 /**
  * move the index.html file from the project /app folder
@@ -24,15 +29,19 @@ appHtml = pickFiles(app, {
     destDir: destDir
 });
 
-/**
- * Add bower dependencies
- * findBowerTrees uses heuristics to pick the lib directory and/or main files,
- * and returns an array of trees for each bower package found.
- */
-sourceTrees = ['app',
-               'bower_components/angular',
-               'bower_components/bootstrap-sass/assets/javascripts',
-               'bower_components/jquery/dist']
+var templates = angularTemplates(app, {
+    srcDir: 'templates',
+    destDir: '/',
+    prepend: 'partials/',
+    strip: 'templates/',
+    minify: {
+        collapseWhitespace: true
+    },
+    fileName:'templates.js',
+    moduleName:'reverse-polish-calculator'
+});
+
+sourceTrees.push(templates);
 
 // merge array into tree
 var appAndDependencies = new mergeTrees(sourceTrees, { overwrite: true })
@@ -43,7 +52,13 @@ var appAndDependencies = new mergeTrees(sourceTrees, { overwrite: true })
  * the build production folder
  */
 appJs = concatenate(appAndDependencies, {
-    inputFiles: ['jquery.js', 'bootstrap.js', 'angular.js', 'js/**/*.js'],
+    inputFiles: [
+        'jquery.js',
+        'bootstrap.js',
+        'angular.js',
+        'js/**/*.js',
+        'templates.js'
+    ],
     outputFile: '/app.js',
     header: '/** Copyright Brandon Schlueter 2015 **/'
 });

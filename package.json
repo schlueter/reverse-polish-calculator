@@ -21,6 +21,7 @@
   "devDependencies": {
     "bower": "^1.3.12",
     "broccoli": "^0.13.3",
+    "broccoli-angular-templates-cache": "git://github.com/schlueter/broccoli-angular-templates-cache.git#master",
     "broccoli-bower": "^0.2.1",
     "broccoli-coffee": "^0.3.0",
     "broccoli-concat": "0.0.12",
