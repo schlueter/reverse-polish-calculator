@@ -1,0 +1,9 @@
+# Managed dependencies
+bower_components/
+node_modules/
+
+# Build directory
+duild/
+
+# Build Cache
+tmp/
