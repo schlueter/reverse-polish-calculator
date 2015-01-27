@@ -4,10 +4,12 @@
 var angularTemplates = require('broccoli-angular-templates-cache'),
     compileSass = require('broccoli-sass'),
     concatenate = require('broccoli-concat'),
+    env = require('broccoli-env').getEnv(),
     mergeTrees = require('broccoli-merge-trees'),
     ngAnnotate = require('broccoli-ng-annotate'),
     pickFiles = require('broccoli-static-compiler'),
     uglifyJs = require('broccoli-uglify-js'),
+
     app = 'app',
     destDir = '/',
     sourceTrees = [
@@ -16,6 +18,7 @@ var angularTemplates = require('broccoli-angular-templates-cache'),
         'bower_components/bootstrap-sass/assets/javascripts',
         'bower_components/jquery/dist'
     ],
+
     appCss,
     appHtml,
     appJs;
@@ -65,10 +68,13 @@ appJs = concatenate(tree, {
     outputFile: '/app.js',
     header: '/** Copyright Brandon Schlueter 2015 **/'
 });
-appJs = uglifyJs(appJs, {
-    compress: true,
-    mangle: true
-});
+
+if (env === 'production') {
+    appJs = uglifyJs(appJs, {
+        compress: true,
+        mangle: false
+    });
+}
 
 /**
  * compile all of the SASS in the project /resources folder into
