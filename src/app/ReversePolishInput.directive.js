@@ -19,35 +19,30 @@ var REVERSE_POLISH_CHARACTERS = /^[0-9+* \-\/]*$/,
 angular.module('reversePolish')
     .directive('reversePolishInput', function() {
         function link(scope, elm, attrs, ctrl) {
-            var tokens;
 
-            function tokenize(value) {
-                return value.split(' ');
-            }
+            function calculate(value) {
 
-            function parsable(value) {
                 function countRegexMatches(regex, array) {
                     return array.filter(function (element) {
                         return regex.test(element);
-                    }).length
+                    }).length;
                 }
 
-                tokens = tokenize(value);
-                var numeralCount = countRegexMatches(NUMERALS, tokens),
-                    operatorCount = countRegexMatches(OPERATORS, tokens);
+                var tokens = value.split(' '),
+                    numeralCount = countRegexMatches(NUMERALS, tokens),
+                    operatorCount = countRegexMatches(OPERATORS, tokens),
+                    result;
 
                 /**
                  * Ensure the first two tokens are numerals and that
                  * there are the correct number of operators
                  * compared to operands for the input to be valid
                  */
-                return NUMERALS.test(tokens[0]) &&
-                       NUMERALS.test(tokens[1]) &&
-                       numeralCount === operatorCount + 1;
-            }
-
-            function calculate() {
-                var result;
+                if (!(NUMERALS.test(tokens[0]) &&
+                      NUMERALS.test(tokens[1]) &&
+                      numeralCount === operatorCount + 1)){
+                    return;
+                }
 
                 function simpleOperation(operand1, operand2, operator) {
                     if (NUMERALS.test(operand1) &&
@@ -57,6 +52,8 @@ angular.module('reversePolish')
                         operand1 = Number(operand1);
                         operand2 = Number(operand2);
                         operator = OPERATIONS[operator];
+                    } else {
+                        return;
                     }
 
                     return operator(operand1, operand2);
@@ -66,43 +63,29 @@ angular.module('reversePolish')
                     result = simpleOperation(Number(tokens[0]),
                                              Number(tokens[1]),
                                              tokens[2]);
-                } else {
-                    result = undefined;
                 }
+
+                scope.result = result;
 
                 return result;
             }
 
-            function getEntry() {
-                return scope.entry;
-            }
-
-            function setResult() {
-                scope.result = calculate();
-            }
-
-
-            function watchEntry() {
-                scope.$watch(getEntry, setResult);
-            }
-
             ctrl.$validators.reversePolish = function(modelValue, viewValue) {
                 if (ctrl.$isEmpty(modelValue)) {
-                  // consider empty models to be valid
-                  return true;
+                    // consider empty models to be valid
+                    return true;
                 }
 
                 if (REVERSE_POLISH_CHARACTERS.test(viewValue) &&
-                    parsable(viewValue)) {
-                  // it is valid
-                  return true;
+                    calculate(viewValue)) {
+                    // it is valid
+                    return true;
                 }
 
                 // it is invalid
+                scope.result = '';
                 return false;
             };
-
-            watchEntry();
         }
         return {
             require: 'ngModel',
