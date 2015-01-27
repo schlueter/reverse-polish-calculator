@@ -42,7 +42,7 @@ var templates = angularTemplates(src, {
         collapseWhitespace: true
     },
     fileName: 'templates.js',
-    moduleName: 'reversePolishCalculator'
+    moduleName: 'reversePolish'
 });
 
 sourceTrees.push(templates);

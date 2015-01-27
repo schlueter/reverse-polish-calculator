@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('reversePolishCalculator', []);
+angular.module('reversePolish', []);
