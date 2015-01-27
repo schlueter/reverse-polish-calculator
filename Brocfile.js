@@ -62,8 +62,8 @@ appJs = concatenate(tree, {
         'jquery.js',
         'bootstrap.js',
         'angular.js',
-        'app/js/**/module.js',
-        'app/js/**/*.js',
+        'app/**/module.js',
+        'app/**/*.js',
         'templates.js'
     ],
     outputFile: '/app.js',
