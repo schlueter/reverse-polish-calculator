@@ -32,7 +32,9 @@ To build the application, `npm run build` may be run. This will use broccoli to 
 
 ## Tests
 
-Tests can be run with Node.js and Mocha by running `npm test`
+Tests can be run with [Node.js][node], [Karma][karma] and [Protractor][protractor] by running `npm test`
 
 [node]: http://nodejs.org/
 [broccoli]: https://github.com/broccolijs/broccoli
+[karma]: http://karma-runner.github.io/
+[protractor]: http://angular.github.io/protractor/
