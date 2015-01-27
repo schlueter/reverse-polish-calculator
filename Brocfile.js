@@ -38,8 +38,8 @@ var templates = angularTemplates(app, {
     minify: {
         collapseWhitespace: true
     },
-    fileName:'templates.js',
-    moduleName:'reverse-polish-calculator'
+    fileName: 'templates.js',
+    moduleName: 'reversePolishCalculator'
 });
 
 sourceTrees.push(templates);
