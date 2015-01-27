@@ -34,7 +34,7 @@ appHtml = pickFiles(src, {
 });
 
 var templates = angularTemplates(src, {
-    srcDir: 'app/templates',
+    srcDir: 'templates',
     destDir: '/',
     prepend: 'partials/',
     strip: 'templates/',
