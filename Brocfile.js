@@ -10,10 +10,10 @@ var angularTemplates = require('broccoli-angular-templates-cache'),
     pickFiles = require('broccoli-static-compiler'),
     uglifyJs = require('broccoli-uglify-js'),
 
-    app = 'app',
+    src = 'src',
     destDir = '/',
     sourceTrees = [
-        app,
+        src,
         'bower_components/angular',
         'bower_components/bootstrap-sass/assets/javascripts',
         'bower_components/jquery/dist'
@@ -27,14 +27,14 @@ var angularTemplates = require('broccoli-angular-templates-cache'),
  * move the index.html file from the project /app folder
  * into the build production folder
  */
-appHtml = pickFiles(app, {
-    srcDir: '/',
+appHtml = pickFiles(src, {
+    srcDir: 'app/',
     files: ['index.html'],
     destDir: destDir
 });
 
-var templates = angularTemplates(app, {
-    srcDir: 'templates',
+var templates = angularTemplates(src, {
+    srcDir: 'app/templates',
     destDir: '/',
     prepend: 'partials/',
     strip: 'templates/',
@@ -62,8 +62,8 @@ appJs = concatenate(tree, {
         'jquery.js',
         'bootstrap.js',
         'angular.js',
-        'js/**/module.js',
-        'js/**/*.js',
+        'app/js/**/module.js',
+        'app/js/**/*.js',
         'templates.js'
     ],
     outputFile: '/app.js',
@@ -82,7 +82,7 @@ if (env === 'production') {
  * a single app.css file in the build production/resources folder
  */
 appCss = compileSass(
-    ['app/style'],
+    ['src/app/style'],
     '/app.sass',
     destDir + 'app.css'
 );
