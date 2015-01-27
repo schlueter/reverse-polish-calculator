@@ -88,6 +88,7 @@ angular.module('reversePolish')
             };
         }
         return {
+            restrict: 'A',
             require: 'ngModel',
             link: link
         };
