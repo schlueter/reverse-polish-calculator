@@ -2,7 +2,7 @@
 
 var REVERSE_POLISH_CHARACTERS = /^[0-9+* \-\/]*$/,
     NUMERALS = /^[0-9]*$/,
-    OPERATORS = /^[+* \-\/]*$/,
+    OPERATORS = /^[+*\-\/]*$/,
     /**
      * This dirctive uses explicit operation functions to avoid using
      * eval; * in this case eval would almost certainly be safe because
