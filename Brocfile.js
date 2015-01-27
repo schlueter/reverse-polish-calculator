@@ -72,7 +72,7 @@ appJs = concatenate(tree, {
 if (env === 'production') {
     appJs = uglifyJs(appJs, {
         compress: true,
-        mangle: false
+        mangle: true
     });
 }
 

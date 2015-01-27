@@ -28,7 +28,9 @@ The development application can be run with `broccoli serve`. This command will 
 
 ## Building a deployable application
 
-To build the application, `npm run build` may be run. This will use broccoli to build the application to the *build* folder. The contents of that folder may then be served as static web content to serve the application.
+To build the application for development, `npm run build` . This will use broccoli to build the application to the *build* folder for inspection during development. 
+
+For a production quality build, use `npm run build-dist`. This will build a fully uglified version of the application into *dist/*. The contents of that folder may then be served as static web content to serve the application.
 
 ## Tests
 

@@ -9,7 +9,8 @@
     "test": "node_modules/karma/bin/karma && node_modules/protractor/bin/protractor e2e-test/protractor.conf.js",
     "postinstall": "node_modules/.bin/bower install && while true; do echo 'This project requires broccoli-cli in order to use\\nthe development server and to build the project.\\n' && read -p 'Would you like to install broccoli-cli?' yn && case $yn in [Yy]* ) npm install -g broccoli-cli; break;; [Nn]* ) echo 'If you change your mind later, just run \"npm install -g broccoli-cli\"' && exit;; * ) echo 'Please answer yes or no.';; esac done",
     "update-webdriver": "webdriver-manager update",
-    "build": "rm -rf ./build && broccoli build build"
+    "build": "rm -rf ./build && broccoli build build",
+    "build-dist": "rm -rf ./dist && BROCCOLI_ENV=production broccoli build dist"
   },
   "repository": {
     "type": "git",

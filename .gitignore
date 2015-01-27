@@ -2,8 +2,9 @@
 bower_components/
 node_modules/
 
-# Build directory
+# Build directories
 duild/
+dist/
 
 # Build Cache
 tmp/
