@@ -2,12 +2,12 @@
 
 ## Requirements
 
-1) It can parse variable sized reverse polish notation inputs
-2) It can perform the 4 basic operators (addition, subtraction, multiplication, division)
-3) It will spit back the result of the input
-4) It can handle malformed RPC strings
-5) Use this as an opportunity to show off your talents in structure code and your knowledge of data structures
-6) Please provide instructions to run the application
+1. It can parse variable sized reverse polish notation inputs
+2. It can perform the 4 basic operators (addition, subtraction, multiplication, division)
+3. It will spit back the result of the input
+4. It can handle malformed RPC strings
+5. Use this as an opportunity to show off your talents in structure code and your knowledge of data structures
+6. Please provide instructions to run the application
 
 ## Examples
 
