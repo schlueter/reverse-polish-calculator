@@ -5,6 +5,7 @@ var angularTemplates = require('broccoli-angular-templates-cache'),
     compileSass = require('broccoli-sass'),
     concatenate = require('broccoli-concat'),
     mergeTrees = require('broccoli-merge-trees'),
+    ngAnnotate = require('broccoli-ng-annotate'),
     pickFiles = require('broccoli-static-compiler'),
     uglifyJs = require('broccoli-uglify-js'),
     app = 'app',
@@ -46,12 +47,14 @@ sourceTrees.push(templates);
 // merge array into tree
 var appAndDependencies = new mergeTrees(sourceTrees, { overwrite: true })
 
+var tree = ngAnnotate(appAndDependencies, {add: true});
+
 /**
  * concatenate and compress all of our JavaScript files in
  * the project /app folder into a single app.js file in
  * the build production folder
  */
-appJs = concatenate(appAndDependencies, {
+appJs = concatenate(tree, {
     inputFiles: [
         'jquery.js',
         'bootstrap.js',
@@ -63,7 +66,8 @@ appJs = concatenate(appAndDependencies, {
     header: '/** Copyright Brandon Schlueter 2015 **/'
 });
 appJs = uglifyJs(appJs, {
-    compress: true
+    compress: true,
+    mangle: true
 });
 
 /**
