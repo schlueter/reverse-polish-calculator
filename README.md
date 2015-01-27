@@ -1,7 +1,5 @@
 # Reverse Polish Notation Calculator
 
-In the language of your choice, please create a calculator capable of processing RPC with the following rules:
-
 ## Requirements
 
 1) It can parse variable sized reverse polish notation inputs
@@ -18,16 +16,23 @@ In the language of your choice, please create a calculator capable of processing
 
 ## Implementation
 
-This is an an implementation of a Reverse Polish Notation Calculator in an  Angular Directive.
+This is an implementation of a Reverse Polish Notation Calculator as an  Angular Directive. Once built with broccoli, the result is a fully minified javascript application, with associated css built from sass. The angular templates are added directly to the template cache rather than being loaded by ajax calls.
 
 ## Setup
 
-This application is managed by [Node.js][node] [brocolli][brocolli] and can be setup locally by cloning this repository and running `npm install`. This command will download the Node.js dependencies and run `bower install && npm install -g broccoli-cli ` to download the application dependencies and globally install the broccoli-cli.
+This application is managed by [Node.js][node] [broccoli][broccoli] and can be setup locally by cloning this repository and running `npm install`. This command will download the Node.js dependencies and run `bower install && npm install -g broccoli-cli ` to download the application dependencies and globally install the broccoli-cli.
 
 ## Running the development application
 
 The development application can be run with `broccoli serve`. This command will serve the application at http://localhost:4200 and rebuild it when the source files are modified.
 
+## Building a deployable application
+
+To build the application, `npm run build` may be run. This will use broccoli to build the application to the *build* folder. The contents of that folder may then be served as static web content to serve the application.
+
 ## Tests
 
 Tests can be run with Node.js and Mocha by running `npm test`
+
+[node]: http://nodejs.org/
+[broccoli]: https://github.com/broccolijs/broccoli
