@@ -82,7 +82,7 @@ if (env === 'production') {
  * a single app.css file in the build production/resources folder
  */
 appCss = compileSass(
-    ['src/app/style'],
+    ['src/style'],
     '/app.sass',
     destDir + 'app.css'
 );
