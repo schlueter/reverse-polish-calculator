@@ -1,31 +1,50 @@
 'use strict';
 
-var NUMERALS = /^[\d]*$/,
-    OPERATORS = /^[+*\-\/]*$/,
-    // This dirctive uses explicit operation functions to avoid using eval
-    OPERATIONS = {
-        '+': function(operand1, operand2) { return operand1 + operand2 },
-        '-': function(operand1, operand2) { return operand1 - operand2 },
-        '*': function(operand1, operand2) { return operand1 * operand2 },
-        '/': function(operand1, operand2) { return operand1 / operand2 }
-    };
+var OPERATORS = /^[+*\-\/]*$/,
+
+/**
+ * This dirctive uses explicit operation functions to avoid having to use eval, which
+ * would be dangerous, if the any of the calculation functions were made to bypass
+ * checking for valid operands and operators. Better safe than sorry.
+ */
+OPERATIONS = {
+    '+': function(operand1, operand2) { return operand1 + operand2; },
+    '-': function(operand1, operand2) { return operand1 - operand2; },
+    '*': function(operand1, operand2) { return operand1 * operand2; },
+    '/': function(operand1, operand2) { return operand1 / operand2; }
+};
 
 angular.module('reversePolish')
     .directive('reversePolishInput', function() {
 
         function simpleOperation(operand1, operand2, operator) {
-            if (NUMERALS.test(operand1) &&
-                NUMERALS.test(operand2) &&
+            // Number(<string not parsable to number>) returns NaN, which evaluates to false
+            operand1 = Number(operand1);
+            operand2 = Number(operand2);
+            //
+            operator = OPERATIONS[operator];
+
+            if (operand1 &&
+                operand2 &&
                 OPERATORS.test(operator)) {
 
                 operand1 = Number(operand1);
                 operand2 = Number(operand2);
-                operator = OPERATIONS[operator];
             } else {
                 return;
             }
 
             return operator(operand1, operand2);
+        }
+
+        function castNumbersAndOperationsInArray(stack) {
+            return stack.map(function (element) {
+                return isNaN(element) ? OPERATIONS[element] : Number(element);
+            });
+        }
+
+        function doMaths(stack, pending) {
+
         }
 
         function countRegexMatches(regex, array) {
@@ -34,21 +53,25 @@ angular.module('reversePolish')
             }).length;
         }
 
-        function calculate(value) {
+        function removeIfNotOfType(array, typeString) {
+            return array.filter(function (a) { return typeof a === typeString; });
+        }
 
-            var tokens = value.split(' '),
-                numeralCount = countRegexMatches(NUMERALS, tokens),
-                operatorCount = countRegexMatches(OPERATORS, tokens),
+        function calculate(input) {
+
+            var tokens = castNumbersAndOperationsInArray(input.split(' ')),
+                numeralCount = removeIfNotOfType(tokens, 'number').length,
+                operatorCount = removeIfNotOfType(tokens, 'function').length,
                 result;
 
             /**
-             * Ensure the first two tokens are numerals and that
+             * Ensure the first two tokens are numerics and that
              * there are the correct number of operators
              * compared to operands for the input to be valid;
              * otherwise return undefined
              */
-            if (!(NUMERALS.test(tokens[0]) &&
-                  NUMERALS.test(tokens[1]) &&
+            if (!(!isNaN(tokens[0]) &&
+                  !isNaN(tokens[1]) &&
                   numeralCount === operatorCount + 1)){
                 return;
             }
