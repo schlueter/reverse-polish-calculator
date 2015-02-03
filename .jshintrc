@@ -1,0 +1,10 @@
+{
+    "globalstrict": false,
+    "node": true,
+    "strict": false,
+
+    "globals": {
+        "angular": false,
+        "map": false
+    }
+}
