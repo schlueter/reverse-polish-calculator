@@ -33,7 +33,8 @@ angular.module('reversePolish')
                  * NaNCount should equal operatorCount since operatorCount is a
                  * count of functions, which are NaN, and if there are more NaN
                  * than operators, there are additional NaN values besides
-                 * functions.
+                 * functions. If there are fewer, the javascript implementation
+                 * this is executing on probably has a bug.
                  */
                 return (NaNCount === operatorCount &&
                         /**
@@ -57,29 +58,39 @@ angular.module('reversePolish')
         }
 
         function calculate(tokens) {
+            var stack = [],
+                token;
 
+            while (tokens) {
+                token = tokens.shift();
+                console.log('token, stack', token, stack);
+
+                if (typeof token === 'number') {
+                    console.log('token is number');
+                    stack.push(token);
+                } else if (stack.length >= 2) {
+                    console.log('stack at least 2 tokens');
+                    stack.push(simpleOperation(stack.pop(), stack.pop(), token));
+                } else {
+                    console.log('otherwise');
+                    return undefined;
+                }
+                if (stack.length === 1 && tokens.length === 0) {
+                    return stack.pop();
+                }
+            }
         }
 
-        function setResult(input) {
+        function getResult(input) {
 
             var tokens = castTokens(input);
 
             if (tokens === undefined) {
+                console.log('tokens', tokens);
                 return;
             }
 
-            /**
-             * Ensure the first two tokens are numbers and
-             * the third is a function. It will have already been checked
-             * to ensure it is a valid operator by the castTokens call.
-             */
-            if (!(typeof tokens[0] === 'number' &&
-                  typeof tokens[1] === 'number' &&
-                  typeof tokens[2] === 'function')) {
-                return;
-            }
-
-            return simpleOperation(tokens[0], tokens[1], tokens[2]);
+            return calculate(tokens);
         }
 
         function link(scope, elm, attrs, ctrl) {
@@ -92,7 +103,7 @@ angular.module('reversePolish')
                 }
 
                 // setResult result and apply to scope
-                scope.result = setResult(viewValue);
+                scope.result = getResult(viewValue);
                 if (scope.result) {
                     // it is valid
                     return true;
