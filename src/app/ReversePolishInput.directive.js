@@ -37,11 +37,6 @@ angular.module('reversePolish')
                  * this is executing on probably has a bug.
                  */
                 return (NaNCount === operatorCount &&
-                        /**
-                         * Numeral count should be equal to the number of operators
-                         * plus one so that there is an operator to operate on each
-                         * pair of numbers or to combine those simple operations.
-                         */
                         numeralCount === operatorCount + 1);
             }
 
@@ -53,42 +48,31 @@ angular.module('reversePolish')
             return array.filter(function (e) { return typeof e === typeString; }).length;
         }
 
-        function simpleOperation(operand1, operand2, operator) {
-            return operator(operand1, operand2);
-        }
-
         function calculate(tokens) {
             var stack = [],
                 token;
 
             while (tokens) {
                 token = tokens.shift();
-                console.log('token, stack', token, stack);
 
                 if (typeof token === 'number') {
-                    console.log('token is number');
                     stack.push(token);
                 } else if (stack.length >= 2) {
-                    console.log('stack at least 2 tokens');
-                    stack.push(simpleOperation(stack.pop(), stack.pop(), token));
+                    // All currently supported operations require exactly 2 operands
+                    stack.push(token(stack.pop(), stack.pop()));
                 } else {
-                    console.log('otherwise');
-                    return undefined;
+                    return;
                 }
                 if (stack.length === 1 && tokens.length === 0) {
                     return stack.pop();
                 }
+                // Otherwise, undefined will be returned
             }
         }
 
         function getResult(input) {
 
             var tokens = castTokens(input);
-
-            if (tokens === undefined) {
-                console.log('tokens', tokens);
-                return;
-            }
 
             return calculate(tokens);
         }
@@ -102,10 +86,9 @@ angular.module('reversePolish')
                     return true;
                 }
 
-                // setResult result and apply to scope
                 scope.result = getResult(viewValue);
-                if (scope.result) {
-                    // it is valid
+                if (scope.result !== undefined) {
+                    // it was able to be calculated
                     return true;
                 }
 
