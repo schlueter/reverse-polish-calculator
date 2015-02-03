@@ -14,9 +14,7 @@ var angularTemplates = require('broccoli-angular-templates-cache'),
     destDir = '/',
     sourceTrees = [
         src,
-        'bower_components/angular',
-        'bower_components/bootstrap-sass/assets/javascripts',
-        'bower_components/jquery/dist'
+        'bower_components/angular'
     ],
 
     appCss,
@@ -59,8 +57,6 @@ var tree = ngAnnotate(appAndDependencies, {add: true});
  */
 appJs = concatenate(tree, {
     inputFiles: [
-        'jquery.js',
-        'bootstrap.js',
         'angular.js',
         'app/**/module.js',
         'app/**/*.js',
