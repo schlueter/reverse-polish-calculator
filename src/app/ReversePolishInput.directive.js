@@ -1,13 +1,11 @@
 'use strict';
 
-var OPERATORS = /^[+*\-\/]*$/,
-
 /**
  * This dirctive uses explicit operation functions to avoid having to use eval, which
  * would be dangerous, if the any of the calculation functions were made to bypass
  * checking for valid operands and operators. Better safe than sorry.
  */
-OPERATIONS = {
+var OPERATIONS = {
     '+': function(operand1, operand2) { return operand1 + operand2; },
     '-': function(operand1, operand2) { return operand1 - operand2; },
     '*': function(operand1, operand2) { return operand1 * operand2; },
@@ -17,70 +15,48 @@ OPERATIONS = {
 angular.module('reversePolish')
     .directive('reversePolishInput', function() {
 
-        function simpleOperation(operand1, operand2, operator) {
-            // Number(<string not parsable to number>) returns NaN, which evaluates to false
-            operand1 = Number(operand1);
-            operand2 = Number(operand2);
-            //
-            operator = OPERATIONS[operator];
-
-            if (operand1 &&
-                operand2 &&
-                OPERATORS.test(operator)) {
-
-                operand1 = Number(operand1);
-                operand2 = Number(operand2);
-            } else {
-                return;
-            }
-
-            return operator(operand1, operand2);
-        }
-
-        function castNumbersAndOperationsInArray(stack) {
+        function castTokens(stack) {
             return stack.map(function (element) {
-                return isNaN(element) ? OPERATIONS[element] : Number(element);
+                return element in OPERATIONS ? OPERATIONS[element] : Number(element);
             });
         }
 
-        function doMaths(stack, pending) {
-
+        function countType(array, typeString) {
+            return array.filter(function (a) { return typeof a === typeString; }).length;
         }
 
-        function countRegexMatches(regex, array) {
-            return array.filter(function (element) {
-                return regex.test(element);
-            }).length;
-        }
-
-        function removeIfNotOfType(array, typeString) {
-            return array.filter(function (a) { return typeof a === typeString; });
+        function simpleOperation(operand1, operand2, operator) {
+            return operator(operand1, operand2);
         }
 
         function calculate(input) {
 
-            var tokens = castNumbersAndOperationsInArray(input.split(' ')),
-                numeralCount = removeIfNotOfType(tokens, 'number').length,
-                operatorCount = removeIfNotOfType(tokens, 'function').length,
+            var tokens = castTokens(input.split(' ')),
+                numeralCount = countType(tokens, 'number'),
+                operatorCount = countType(tokens, 'function'),
                 result;
 
             /**
-             * Ensure the first two tokens are numerics and that
-             * there are the correct number of operators
+             * Ensure there are the correct number of operators
              * compared to operands for the input to be valid;
              * otherwise return undefined
              */
-            if (!(!isNaN(tokens[0]) &&
-                  !isNaN(tokens[1]) &&
-                  numeralCount === operatorCount + 1)){
+            if (numeralCount !== operatorCount + 1) {
                 return;
             }
 
-            if (tokens && OPERATORS.test(tokens[2])) {
-                result = simpleOperation(Number(tokens[0]), Number(tokens[1]), tokens[2]);
+            /**
+             * Ensure the first two tokens are numbers and
+             * the third is a function. It will have already been checked
+             * to ensure it is a valid operator by the castTokens call.
+             */
+            if (!(typeof tokens[0] === 'number' &&
+                  typeof tokens[1] === 'number' &&
+                  typeof tokens[2] === 'function')) {
+                return;
             }
 
-            return result;
+            return simpleOperation(tokens[0], tokens[1], tokens[2]);
         }
 
         function link(scope, elm, attrs, ctrl) {

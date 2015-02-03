@@ -22,4 +22,4 @@ angular.module('reversePolish')
             restrict: 'A',
             link: link
         };
-    })
+    });
