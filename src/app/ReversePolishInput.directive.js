@@ -15,33 +15,56 @@ var OPERATIONS = {
 angular.module('reversePolish')
     .directive('reversePolishInput', function() {
 
-        function castTokens(stack) {
-            return stack.map(function (element) {
+        function castTokens(input) {
+
+            // Split by spaces and remove empty strings
+            var tokens = input.split(' ').filter(function (e) { return e !== ''; });
+
+            tokens = tokens.map(function (element) {
                 return element in OPERATIONS ? OPERATIONS[element] : Number(element);
             });
+
+            function validateTokens(tokens) {
+                var NaNCount = tokens.filter(function (e) { return isNaN(e); }).length,
+                    operatorCount = countType(tokens, 'function'),
+                    numeralCount = countType(tokens, 'number');
+
+                /**
+                 * NaNCount should equal operatorCount since operatorCount is a
+                 * count of functions, which are NaN, and if there are more NaN
+                 * than operators, there are additional NaN values besides
+                 * functions.
+                 */
+                return (NaNCount === operatorCount &&
+                        /**
+                         * Numeral count should be equal to the number of operators
+                         * plus one so that there is an operator to operate on each
+                         * pair of numbers or to combine those simple operations.
+                         */
+                        numeralCount === operatorCount + 1);
+            }
+
+            return validateTokens(tokens) ? tokens : undefined;
+
         }
 
         function countType(array, typeString) {
-            return array.filter(function (a) { return typeof a === typeString; }).length;
+            return array.filter(function (e) { return typeof e === typeString; }).length;
         }
 
         function simpleOperation(operand1, operand2, operator) {
             return operator(operand1, operand2);
         }
 
-        function calculate(input) {
+        function calculate(tokens) {
 
-            var tokens = castTokens(input.split(' ')),
-                numeralCount = countType(tokens, 'number'),
-                operatorCount = countType(tokens, 'function'),
-                result;
+        }
 
-            /**
-             * Ensure there are the correct number of operators
-             * compared to operands for the input to be valid;
-             * otherwise return undefined
-             */
-            if (numeralCount !== operatorCount + 1) {
+        function setResult(input) {
+
+            var tokens = castTokens(input);
+
+            if (tokens === undefined) {
                 return;
             }
 
@@ -68,8 +91,8 @@ angular.module('reversePolish')
                     return true;
                 }
 
-                // Calculate result and apply to scope
-                scope.result = calculate(viewValue);
+                // setResult result and apply to scope
+                scope.result = setResult(viewValue);
                 if (scope.result) {
                     // it is valid
                     return true;
